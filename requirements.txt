@@ -1,0 +1,4 @@
+# Optional but recommended: fast AES (C extension).
+# Everything works without it (pure-Python AES fallback), but tools/recover_key.py
+# does millions of AES operations and is much faster with pycryptodome.
+pycryptodome>=3.18

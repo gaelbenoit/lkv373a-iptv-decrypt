@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Do NOT commit third-party firmware, captures or decoded media
+*.bin
+*.PKG
+*.pkg
+*.ROM
+*.rom
+*.pcap
+*.pcapng
+*.ts
+*.h264
+*.mp4
+*.png
+captures/
+firmware/
