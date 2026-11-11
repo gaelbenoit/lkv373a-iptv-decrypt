@@ -142,7 +142,7 @@ to any user.
 * [x] Encryption scheme fully reverse-engineered and documented
 * [x] Key recovery from firmware
 * [x] Offline decryption (pcap -> clear .ts) and live capture PoC
-* [x] Standalone Python player, v1 (live multicast -> decrypt -> on-screen video)
-* [ ] Player: audio output + A/V sync, nicer UI (Qt / libmpv)
+* [x] Standalone Python player, v2 (video + audio, audio-master A/V sync)
+* [ ] Player UI polish: embedded Qt / libmpv surface, transport bar
 
 Licensed under the MIT License — see [`LICENSE`](LICENSE).

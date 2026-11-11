@@ -1,32 +1,48 @@
-# Standalone player (v1)
+# Standalone player (v2)
 
-A self-contained live player: multicast → decrypt (`lkviptv`) → decode (PyAV /
-libav, in-process) → OpenCV window. No external ffmpeg or VLC process.
+A self-contained live player: multicast → decrypt (`lkviptv`) → decode **video +
+audio** (PyAV / libav, in-process) → audio out via sounddevice + video in an
+OpenCV window, with **audio-master A/V sync** (the ffplay model). No external
+ffmpeg or VLC process.
 
 ```bash
 pip install -r player/requirements.txt
-python player/player.py --iface 192.168.1.50        # live
+python player/player.py --iface 192.168.1.50          # live, with sound
 python player/player.py --iface 192.168.1.50 --record out.ts
-python player/player.py --file clear.ts             # offline test (no device)
+python player/player.py --file clear.ts               # offline test (no device)
+python player/player.py --iface 192.168.1.50 --no-audio
 ```
 
 `--iface` is the IP of the local NIC that sees the encoder; set it on multi-homed
-machines. Keys: `q` / `Esc` to quit.
+machines.
+
+Keys: `q`/`Esc` quit · `space` pause · `m` mute · `f` fullscreen · `+`/`-` volume.
 
 ## How it works
 
-`DecryptingMulticastSource` is a readable file-like object. A background thread
-joins the group, decrypts each datagram with `lkviptv.StreamDecryptor`, and
-appends the clear MPEG-TS bytes to a bounded buffer. PyAV opens that object as an
-`mpegts` input and decodes H.264; frames are shown with OpenCV. libav is linked
-in-process (via PyAV), so the whole thing is one Python application.
+Three threads around the clear MPEG-TS stream:
 
-## Scope / limitations (v1)
+* **decode** — PyAV demuxes the TS and decodes H.264 video (→ BGR frames) and MPEG
+  audio (→ resampled to 48 kHz / 16-bit stereo), pushing both into bounded queues;
+* **audio** — writes PCM to a `sounddevice` output stream; this is the **master
+  clock** (seconds of audio actually played);
+* **display** (main thread) — shows each video frame when the master clock reaches
+  its PTS, dropping frames if it falls behind, and handles the keyboard.
 
-* **Video only** — audio (MPEG, PID `0x7D2`) is decrypted into the recorded `.ts`
-  but not played; A/V output + sync is the next step.
-* Display is a plain OpenCV window (no transport controls yet).
-* Timing follows decode order; a proper jitter buffer / PTS pacing can be added.
+libav is linked in-process via PyAV, so the whole thing is one Python application.
 
-A future version can swap the OpenCV window for an embedded Qt or libmpv surface
-and add audio — the network/decrypt/decode core stays the same.
+Audio format on this stream: MPEG-1 Layer II, 48 kHz, stereo.
+
+## Tested vs. needs a live run
+
+* **Verified headless:** the full decode + audio-resample path (PyAV demux of both
+  streams, H.264 → BGR, MPEG audio → int16/48k stereo, PTS/clock arithmetic).
+* **Needs your machine (not testable without the device + display + speakers):**
+  actual audio output, the window, and live multicast reception. If A/V drift
+  appears on your setup, the knobs are the queue sizes and the live `probesize` /
+  buffer; say the word and we tune them.
+
+## Next (v3)
+
+A nicer shell (embedded Qt or libmpv surface, transport bar, channel info) on top
+of the same decrypt/decode/sync core.
