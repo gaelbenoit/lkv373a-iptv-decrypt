@@ -42,6 +42,24 @@ Audio format on this stream: MPEG-1 Layer II, 48 kHz, stereo.
   appears on your setup, the knobs are the queue sizes and the live `probesize` /
   buffer; say the word and we tune them.
 
+## Troubleshooting
+
+**`ModuleNotFoundError: No module named 'av'` even after installing the
+requirements** — you installed into one Python but are running another. This is
+common on Windows when a venv (or the Microsoft Store Python) comes first on
+`PATH`. Run the player with the *same* interpreter you installed into. The Windows
+`py` launcher targets your default real Python:
+
+```bash
+py -c "import av, cv2, sounddevice; print('OK')"      # must print OK
+py player/player.py --iface <your-NIC-ip>
+```
+
+Or call the interpreter explicitly, e.g.
+`C:\...\Python312\python.exe player\player.py ...`. Using `python -m pip install
+-r player/requirements.txt` (instead of a bare `pip`) also guarantees the install
+lands in the interpreter you then run.
+
 ## Next (v3)
 
 A nicer shell (embedded Qt or libmpv surface, transport bar, channel info) on top
