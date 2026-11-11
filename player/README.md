@@ -1,17 +1,30 @@
-# Standalone player (v2)
+# Standalone player
 
 A self-contained live player: multicast → decrypt (`lkviptv`) → decode **video +
-audio** (PyAV / libav, in-process) → audio out via sounddevice + video in an
-OpenCV window, with **audio-master A/V sync** (the ffplay model). No external
-ffmpeg or VLC process.
+audio** (PyAV / libav, in-process) → audio out via sounddevice, with
+**audio-master A/V sync** (the ffplay model). No external ffmpeg or VLC process.
+
+Two front-ends share the same engine:
+
+* **`player.py`** — minimal, OpenCV window (lightest deps).
+* **`player_qt.py`** — Qt UI with a transport bar (play/pause, mute, volume
+  slider, fullscreen) and status line; needs `pip install PySide6`.
 
 ```bash
 pip install -r player/requirements.txt
-python player/player.py --iface 192.168.1.50          # live, with sound
-python player/player.py --iface 192.168.1.50 --record out.ts
-python player/player.py --file clear.ts               # offline test (no device)
-python player/player.py --iface 192.168.1.50 --no-audio
+# minimal (OpenCV window)
+python player/player.py    --iface 192.168.1.50
+# Qt UI
+pip install PySide6
+python player/player_qt.py --iface 192.168.1.50
+# common options (both):
+#   --record out.ts     also save the clear stream
+#   --file clear.ts     play an existing clear .ts (offline test, no device)
+#   --no-audio          video only
 ```
+
+On Windows run with `py` (not `python`) so you use the interpreter the packages
+are installed in — see Troubleshooting below.
 
 `--iface` is the IP of the local NIC that sees the encoder; set it on multi-homed
 machines.
@@ -60,7 +73,10 @@ Or call the interpreter explicitly, e.g.
 -r player/requirements.txt` (instead of a bare `pip`) also guarantees the install
 lands in the interpreter you then run.
 
-## Next (v3)
+## Status
 
-A nicer shell (embedded Qt or libmpv surface, transport bar, channel info) on top
-of the same decrypt/decode/sync core.
+The Qt front-end (`player_qt.py`) was validated headless (imports, window
+construction, signal wiring, controls, frame display). Live audio output, the
+on-screen window and multicast reception need a run on your machine. Possible
+further polish: an embedded libmpv surface, channel/EPG info, a seek-in-buffer
+bar.

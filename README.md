@@ -60,7 +60,8 @@ poc/
   decrypt_pcap.py     offline:  capture.pcapng -> clear .ts
   capture_live.py     live:     join multicast, decrypt on the fly, record .ts
 player/
-  player.py           standalone live player (multicast -> decrypt -> on-screen video)
+  player.py           standalone live player, OpenCV window (video + audio + A/V sync)
+  player_qt.py        same engine with a Qt UI (transport bar, fullscreen, volume)
 docs/
   encryption.md       the scrambling scheme, in detail
   firmware.md         firmware container format + how to extract the key
@@ -142,7 +143,10 @@ to any user.
 * [x] Encryption scheme fully reverse-engineered and documented
 * [x] Key recovery from firmware
 * [x] Offline decryption (pcap -> clear .ts) and live capture PoC
-* [x] Standalone Python player, v2 (video + audio, audio-master A/V sync)
-* [ ] Player UI polish: embedded Qt / libmpv surface, transport bar
+* [x] Standalone Python player: OpenCV window + Qt UI (video + audio, A/V sync)
+* [ ] Optional polish: libmpv surface, channel info, real-time relay
+
+See [`STATE.md`](STATE.md) for a language-agnostic spec + handoff notes (to
+continue or reimplement this in another language).
 
 Licensed under the MIT License — see [`LICENSE`](LICENSE).
