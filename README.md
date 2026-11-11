@@ -59,6 +59,8 @@ tools/
 poc/
   decrypt_pcap.py     offline:  capture.pcapng -> clear .ts
   capture_live.py     live:     join multicast, decrypt on the fly, record .ts
+player/
+  player.py           standalone live player (multicast -> decrypt -> on-screen video)
 docs/
   encryption.md       the scrambling scheme, in detail
   firmware.md         firmware container format + how to extract the key
@@ -81,6 +83,13 @@ Record the live stream straight to a clear file:
 
 ```bash
 python poc/capture_live.py out.ts --iface 192.168.1.50 --seconds 20
+```
+
+Watch the live stream in a standalone window (no external player):
+
+```bash
+pip install -r player/requirements.txt       # av + opencv-python
+python player/player.py --iface 192.168.1.50
 ```
 
 Prove where the key lives / recover it yourself from firmware:
@@ -133,6 +142,7 @@ to any user.
 * [x] Encryption scheme fully reverse-engineered and documented
 * [x] Key recovery from firmware
 * [x] Offline decryption (pcap -> clear .ts) and live capture PoC
-* [ ] Standalone Python player (live multicast -> decrypt -> on-screen video)
+* [x] Standalone Python player, v1 (live multicast -> decrypt -> on-screen video)
+* [ ] Player: audio output + A/V sync, nicer UI (Qt / libmpv)
 
 Licensed under the MIT License — see [`LICENSE`](LICENSE).

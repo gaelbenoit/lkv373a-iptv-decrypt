@@ -1,0 +1,4 @@
+# Player dependencies (in addition to the repo's pycryptodome).
+# Both embed / use ffmpeg's libav in-process -- no external ffmpeg or VLC needed.
+av>=12.0            # PyAV: H.264 decoding via libav
+opencv-python>=4.8  # display window (cv2.imshow)
