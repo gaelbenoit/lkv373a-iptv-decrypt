@@ -97,17 +97,28 @@ from the LKV373A reverse-engineering community (e.g. daniel "danman" Kučera's
 shared archive). Both tools accept the packed container directly — decompression
 (SMEDIA02 / SMAZ) is automatic.
 
-## Prior art & credits
+## Credits
 
-This builds on the public LKV373A reverse-engineering work:
+This project builds on a decade of community reverse-engineering of the LKV373A /
+ITE platform. Full attributions and links are in [`CREDITS.md`](CREDITS.md); in
+short:
 
-* **danman (Daniel Kučera)** — LKV373A protocol/firmware analysis and firmware archive.
-* **smaeul/ghidra-or1k** — the OpenRISC (big-endian, delay-slot) Ghidra processor module.
-* **v3l0c1r4pt0r / ittk** — ITEPKG container tooling; the SMAZ (UCL NRV2E) decompressor
-  here is a clean-room pure-Python reimplementation.
+* **danman (Daniel Kučera)** — LKV373A protocol/firmware reverse engineering and the
+  shared firmware archive we decompressed and scanned.
+  [github.com/danman/lkv373a](https://github.com/danman/lkv373a)
+* **smaeul (Samuel Holland)** — `ghidra-or1k`, the OpenRISC big-endian/delay-slot
+  Ghidra processor module that made the encoder readable.
+  [github.com/smaeul/ghidra-or1k](https://github.com/smaeul/ghidra-or1k)
+* **v3l0c1r4pt0r** — `ittk` and the SMEDIA02/ITEPKG03/SMAZ container documentation;
+  our `tools/smaz.py` is a clean-room reimplementation from it.
+  [github.com/v3l0c1r4pt0r/ittk](https://github.com/v3l0c1r4pt0r/ittk)
+* **Markus F.X.J. Oberhumer — UCL/NRV2E** (the firmware's compression algorithm),
+  **FFmpeg** (decode/verify), **PyCryptodome** (AES), and the **MPEG-TS / H.264 /
+  AES** standards. See [`CREDITS.md`](CREDITS.md).
 
-The specific key value, the selective-encryption behaviour (first 8 packets), and
-the full offline/live decryption are the contribution of this repository.
+Original to this repository: the specific factory key value and its constancy
+across the firmware line, the selective-encryption finding (only the first 8 TS
+packets per frame are encrypted), and the end-to-end offline/live decryption.
 
 ## Responsible use
 
